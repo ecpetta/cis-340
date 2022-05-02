@@ -1,34 +1,43 @@
 import React from 'react';
-import { Text, View, SectionList} from 'react-native';
+import reactDom from 'react-dom';
+import { StyleSheet, Text, View, ImageBackground } from 'react-native';
 
+export default function App() {
 
-
-export default StatesApp = () => {
+  const csuLogo = {
+    uri: "https://raw.githubusercontent.com/AbdunabiRamadan/CIS340/master/images/logo.png",
+    width: 80,
+    height: 80
+  };
+  
+  
   return (
-    <View style={{flex: 1, paddingTop: 22}}>
-      <SectionList
-        sections={[
-          {title: 'A', data: ['Alabama','Alaska','Arizona','Arkansas']},
-          {title: 'B', data: ['California','Colorado','Conneticut']},
-          {title: 'C', data: ['Delaware']},
-          {title: 'D', data: ['Florida']},
-          {title: 'E', data: ['Georgia']},
-          {title: 'F', data: ['Hawaii']},
-        ]} 
+    <View style={styles.container}>
+      <ImageBackground source={csuLogo} style={styles.image}>
 
-        returnItem={({item}) => <Text style={{padding: 10, fontsize: 20, height: 44}}> {item} </Text>}
-        renderSectionHeader={({section}) => <Text style={{paddingTop: 4, paddingLeft: 10,
-        paddingRight: 10,
-        paddingBottom: 4,
-        fontSize: 14,
-        fontWeight: 'bold',
-        backgroundColor: '#9FA8DA',}}>{section.title}</Text>}
-        keyExtractor={(item,index) =>index}
-      
-      />
+      <Text style={styles.text}> CSU Logo </Text>
+
+      </ImageBackground>
 
     </View>
-
-
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "column",
+  },
+
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center"
+  },
+
+  text: {
+    color: "green",
+    fontSize: 40,
+    fontWeight: 'bold',
+  }
+});
