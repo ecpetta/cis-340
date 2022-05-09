@@ -1,34 +1,99 @@
-import React from 'react';
-import { Text, View, SectionList} from 'react-native';
+import React, {Component} from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';// import
+import * as Sharing from 'expo-sharing';//import
+
+export default function App () {
+
+  const [selectedImage, setSelectedImage] = React.useState(null)
 
 
+  let openImagePickerAsync = async () => {
+    let permissionsResult = await ImagePicker.requestCameraPermissionsAsync();
+    
+    if (permissionsResult.granted===false){
+      alert("Permission is required!");
+      return;
+    }
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    
+    if (pickerResult.cancelled === true) {
+      return;
+    }
+    setSelectedImage({ localUri: pickerResult.uri })
 
-export default StatesApp = () => {
-  return (
-    <View style={{flex: 1, paddingTop: 22}}>
-      <SectionList
-        sections={[
-          {title: 'A', data: ['Alabama','Alaska','Arizona','Arkansas']},
-          {title: 'B', data: ['California','Colorado','Conneticut']},
-          {title: 'C', data: ['Delaware']},
-          {title: 'D', data: ['Florida']},
-          {title: 'E', data: ['Georgia']},
-          {title: 'F', data: ['Hawaii']},
-        ]} 
+  };
 
-        returnItem={({item}) => <Text style={{padding: 10, fontsize: 20, height: 44}}> {item} </Text>}
-        renderSectionHeader={({section}) => <Text style={{paddingTop: 4, paddingLeft: 10,
-        paddingRight: 10,
-        paddingBottom: 4,
-        fontSize: 14,
-        fontWeight: 'bold',
-        backgroundColor: '#9FA8DA',}}>{section.title}</Text>}
-        keyExtractor={(item,index) =>index}
-      
-      />
+  let openSharingDialogAsync =  async () => {
+    if (!(await Sharing.isAvailableAsync())){
+      alert('Sharing is not available on my phone');
+      return;
+    }
+    Sharing.shareAsync(selectedImage.localUri);
+  };
+
+  if (selectedImage !== null) {
+    return(
+      <View style={styles.container}>
+        <Image source={{ uri: selectedImage.localUri}} style={styles.selImage}/>
+
+        <TouchableOpacity onPress={openSharingDialogAsync} style={styles.button}>
+          <Text style={styles.buttonText}> Share my photo </Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+return (
+    <View style={styles.container}>
+      <Image source={{uri: 'https://raw.githubusercontent.com/AbdunabiRamadan/CIS340/master/images/logo.png'}} style={styles.logo}/>
+        <Text style={styles.insts}>
+          Press the button below to select an image on your phoneeee!
+        </Text>
+      <TouchableOpacity style={styles.button} onPress={openImagePickerAsync} >
+          <Text style={styles.buttonText}>Pick an image</Text>
+      </TouchableOpacity>
 
     </View>
-
-
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "#FFFFE0"
+  },
+
+  button: {
+    backgroundColor: "#778899",
+    padding: 20,
+    borderRadius: 5
+  },
+
+  insts: {
+    fontSize: 18,
+    color: "#87CEFA",
+    marginHorizontal: 15,
+    marginBottom: 10,
+  },
+
+  logo: {
+    wdith: 310,
+    height: 300,
+    marginBottom: 20
+  },
+
+  buttonText: {
+    fontSize: 20,
+    color: "#FFF"
+  },
+
+  selImage: {
+    width: 300,
+    height: 300,
+    resizeMode: 'contain'
+  }
+
+});
